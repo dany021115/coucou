@@ -159,6 +159,18 @@ def main():
             check(coucou.next().get("term_program") == "", "an editor with a bundle ID is left to it")
             run(hook_dir, event, env=dict(env, CLAUDE_CODE_ENTRYPOINT="sdk-ts"))
             check(coucou.next().get("term_program") == "", "other entrypoints are not taken for VS Code")
+
+            intellij = dict(env, __CFBundleIdentifier="com.jetbrains.intellij")
+            run(hook_dir, event, env=intellij)
+            check(coucou.next().get("coucou_agent") == "jetbrains", "IntelliJ goes to the JetBrains pill")
+            run(hook_dir, event, env=dict(env, __CFBundleIdentifier="com.google.android.studio"))
+            check(coucou.next().get("coucou_agent") == "jetbrains", "so does Android Studio")
+            run(hook_dir, event, env=dict(env, TERMINAL_EMULATOR="JetBrains-JediTerm"))
+            check(coucou.next().get("coucou_agent") == "jetbrains", "so does a JediTerm with no bundle ID")
+            run(hook_dir, event, args=("--agent", "amp"), env=intellij)
+            check(coucou.next().get("coucou_agent") == "amp", "an explicit --agent still wins")
+            run(hook_dir, event, env=dict(env, __CFBundleIdentifier="com.apple.Terminal"))
+            check("coucou_agent" not in coucou.next(), "a plain terminal stays untagged")
             coucou.close()
 
             out, took = run(hook_dir, request, env=dict(env, COUCOU_SOCKET=str(work / "none.sock")))

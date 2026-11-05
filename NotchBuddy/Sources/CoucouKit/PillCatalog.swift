@@ -77,6 +77,9 @@ enum PillCatalog {
               category: .workspace, subtitle: String(localized: "Integration"),  source: .agent,  githubOnly: true),
         .init(id: "agent_codex",         name: "Codex",       color: "#2DD4BF",
               category: .workspace, subtitle: String(localized: "Integration"),  source: .agent,  githubOnly: true),
+        // Tagged by the relay from the IDE terminal's environment, so nothing to install.
+        .init(id: "agent_jetbrains",     name: "JetBrains",   color: "#FE315D",
+              category: .workspace, subtitle: String(localized: "Integration"),  source: .agent,  githubOnly: true),
         // ── Agents ───────────────────────────────────────────────────────────
         .init(id: "agent_gemini",        name: "Gemini CLI",  color: "#8AB4F8",
               category: .agent,     subtitle: String(localized: "Agent"),        source: .agent,  githubOnly: true),

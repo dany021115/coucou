@@ -3739,6 +3739,12 @@ def main():
     # route them to the Claude Desktop pill instead of dropping them (no VS Code terminal).
     if not payload.get('coucou_agent') and os.environ.get('CLAUDE_CODE_ENTRYPOINT') == 'claude-desktop':
         payload['coucou_agent'] = 'claude-desktop'
+    # Claude Code in a JetBrains IDE's terminal (Android Studio included): its own pill,
+    # since those hosts are not in ClaudeHost.terminals and would be dropped otherwise.
+    if not payload.get('coucou_agent') and (
+        os.environ.get('TERMINAL_EMULATOR') == 'JetBrains-JediTerm'
+        or os.environ.get('__CFBundleIdentifier', '').startswith(('com.jetbrains.', 'com.google.android.studio'))):
+        payload['coucou_agent'] = 'jetbrains'
 
     # Enrich with terminal context
     env = os.environ
@@ -4114,6 +4120,12 @@ def main():
     # route them to the Claude Desktop pill instead of dropping them (no VS Code terminal).
     if not payload.get('coucou_agent') and os.environ.get('CLAUDE_CODE_ENTRYPOINT') == 'claude-desktop':
         payload['coucou_agent'] = 'claude-desktop'
+    # Claude Code in a JetBrains IDE's terminal (Android Studio included): its own pill,
+    # since those hosts are not in ClaudeHost.terminals and would be dropped otherwise.
+    if not payload.get('coucou_agent') and (
+        os.environ.get('TERMINAL_EMULATOR') == 'JetBrains-JediTerm'
+        or os.environ.get('__CFBundleIdentifier', '').startswith(('com.jetbrains.', 'com.google.android.studio'))):
+        payload['coucou_agent'] = 'jetbrains'
 
     env = os.environ
     payload.setdefault('term_program', term_program(env))
