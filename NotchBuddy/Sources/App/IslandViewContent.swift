@@ -327,6 +327,12 @@ struct OverviewView: View {
             #endif
         case "agent_claude-desktop":
             openClaudeDesktopApp()
+        case "agent_jetbrains":
+            // ponytail: first running JetBrains IDE; the session's own IDE if this ever needs to pick.
+            NSWorkspace.shared.runningApplications.first {
+                let id = $0.bundleIdentifier ?? ""
+                return (id.hasPrefix("com.jetbrains.") && id != "com.jetbrains.toolbox") || id == "com.google.android.studio"
+            }?.activate()
         case "agent_gemini", "agent_antigravity",
              "agent_copilot", "agent_muse", "agent_opencode", "agent_amp":
             #if !APPSTORE
@@ -1980,7 +1986,7 @@ struct IntegrationCardView: View {
         switch task.pill {
         // Cursor sessions are Claude Code running in Cursor's integrated terminal,
         // so the Cursor pill is set up exactly when the Claude Code hooks are.
-        case "integration_claude", "agent_cursor":
+        case "integration_claude", "agent_cursor", "agent_jetbrains":
             return HookServer.claudeHooksInstalled()
         case "agent_codex":
             #if !APPSTORE
@@ -2213,6 +2219,7 @@ struct IntegrationCardView: View {
                    || task.pill == "agent_codex"        || task.pill == "agent_copilot"
                    || task.pill == "agent_muse"         || task.pill == "agent_opencode"
                    || task.pill == "agent_amp"          || task.pill == "agent_hermes"
+                   || task.pill == "agent_jetbrains"
         let isAI    = ChatProvider(pillID: task.id) != nil
         if isConfigured {
             if isHooks { return String(localized: "Hooks installed") }
